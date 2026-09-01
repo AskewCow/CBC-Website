@@ -1,0 +1,10 @@
+{
+  "description": "Engage with a unique web platform designed for Claude Builder Club members, featuring an interactive terminal-style interface that enhances user experience.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
