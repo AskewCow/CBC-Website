@@ -1,0 +1,24 @@
+# Local development Postgres for the CBC website + Discord bot.
+# Production runs Postgres directly on the Oracle VM — see db/PROVISION.md.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cbc-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cbc
+    # Host port 5433 (5432 is often taken by another local Postgres). The
+    # container still listens on 5432 internally.
+    ports:
+      - "5433:5432"
+    volumes:
+      - cbc-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cbc"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  cbc-pgdata:

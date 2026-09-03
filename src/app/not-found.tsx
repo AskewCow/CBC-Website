@@ -2,133 +2,224 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-const TRACE: { text: string; color: string }[] = [
-  { text: "Error: ENOENT: no such file or directory", color: "#D97757" },
-  { text: "  at Router.navigate (react-router@8.x)", color: "rgba(250,249,245,0.3)" },
-  { text: "  at handleRequest (/app/src/main.tsx:12)", color: "rgba(250,249,245,0.3)" },
-  { text: "  at processTicksAndRejections (node:internal)", color: "rgba(250,249,245,0.3)" },
-  { text: "", color: "" },
-  { text: "Resolving...", color: "#B0AEA5" },
+const MONO = "var(--font-jbmono), ui-monospace, monospace";
+
+// ── Eye animation sequence ────────────────────────────────────────────────────
+type Eye = { l: string; r: string; ms: number };
+const EYES: Eye[] = [
+  { l: ">", r: "<", ms: 2600 },
+  { l: "-", r: "-", ms: 130 },
+  { l: ">", r: "<", ms: 1800 },
+  { l: ">", r: "<", ms: 3200 },
+  { l: "-", r: "-", ms: 130 },
+  { l: ">", r: "<", ms: 2000 },
+  { l: "x", r: "x", ms: 200 },
+  { l: ">", r: "<", ms: 2400 },
 ];
 
-const SUGGESTIONS = [
-  { path: "/", label: "home" },
-  { path: "/projects", label: "projects" },
-  { path: "/events", label: "events" },
-  { path: "/join", label: "how to join" },
-];
-
-export default function NotFoundPage() {
-  const pathname = usePathname();
-  const [shown, setShown] = useState(0);
-  const [resolved, setResolved] = useState(false);
+// ── Claude bot ────────────────────────────────────────────────────────────────
+function ClaudeBot() {
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    if (shown < TRACE.length) {
-      const delay = shown === 0 ? 400 : shown < 5 ? 70 : 650;
-      const t = setTimeout(() => setShown((n) => n + 1), delay);
-      return () => clearTimeout(t);
-    }
-    const t = setTimeout(() => setResolved(true), 500);
+    const t = setTimeout(() => setIdx((i) => (i + 1) % EYES.length), EYES[idx].ms);
+    return () => clearTimeout(t);
+  }, [idx]);
+
+  const { l, r } = EYES[idx];
+  const B = 5;
+
+  return (
+    <div
+      style={{
+        animation: "bot-float 3.4s ease-in-out infinite",
+        display: "inline-block",
+        filter: "drop-shadow(0 0 20px rgba(217,119,87,0.3))",
+      }}
+    >
+      {/* Body */}
+      <div
+        style={{
+          width: 136,
+          height: 94,
+          backgroundColor: "#D97757",
+          border: `${B}px solid rgba(255,255,255,0.85)`,
+          borderRadius: 6,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: MONO,
+            fontSize: 28,
+            fontWeight: 800,
+            color: "#141413",
+            letterSpacing: 10,
+            userSelect: "none",
+          }}
+        >
+          {l}&nbsp;{r}
+        </span>
+      </div>
+
+      {/* Legs */}
+      <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: -B }}>
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: 22,
+              height: 26,
+              backgroundColor: "#D97757",
+              border: `${B}px solid rgba(255,255,255,0.85)`,
+              borderTop: "none",
+              borderRadius: "0 0 4px 4px",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Terminal error ────────────────────────────────────────────────────────────
+const LINES = [
+  { text: "cat /404/index.tsx", kind: "cmd" },
+  { text: "cat: /404/index.tsx: No such file or directory", kind: "err" },
+  { text: "process exited with code 1", kind: "muted" },
+] as const;
+
+function TerminalError() {
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    if (shown >= LINES.length) return;
+    const t = setTimeout(() => setShown((s) => s + 1), shown === 0 ? 900 : 520);
     return () => clearTimeout(t);
   }, [shown]);
 
   return (
-    <div className="pt-14 min-h-screen flex items-center justify-center px-6">
-      <div className="w-full max-w-lg">
-        {/* Terminal window */}
-        <div className="bg-surface border border-border overflow-hidden">
-          <div className="bg-surface-2 border-b border-border px-4 py-2.5 flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <div style={{ backgroundColor: "rgba(255,95,87,0.75)" }} className="w-3 h-3 rounded-full" />
-              <div style={{ backgroundColor: "rgba(255,189,46,0.75)" }} className="w-3 h-3 rounded-full" />
-              <div style={{ backgroundColor: "rgba(40,200,64,0.75)" }} className="w-3 h-3 rounded-full" />
-            </div>
-            <span
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              className="text-xs text-stone/50 ml-1"
-            >
-              cbc@trinity ~ — claude
-            </span>
-          </div>
+    <div
+      style={{
+        fontFamily: MONO,
+        backgroundColor: "#1C1C1A",
+        border: "1px solid rgba(176,174,165,0.1)",
+        borderLeft: "3px solid rgba(217,119,87,0.35)",
+      }}
+      className="text-xs text-left px-5 py-4 w-full max-w-xs space-y-1.5"
+    >
+      <p>
+        <span style={{ color: "#D97757" }}>✦</span>
+        <span style={{ color: "#788C5D" }} className="mx-1">cbc@trinity</span>
+        <span style={{ color: "#B0AEA5" }}>~</span>
+        <span style={{ color: "#B0AEA5" }} className="mx-1">%</span>
+        {shown >= 1 && (
+          <span style={{ color: "#CD9D7D" }} className="ml-1">
+            {LINES[0].text}
+          </span>
+        )}
+      </p>
+      {shown >= 2 && (
+        <p style={{ color: "#D97757" }}>{LINES[1].text}</p>
+      )}
+      {shown >= 3 && (
+        <p style={{ color: "rgba(176,174,165,0.35)" }}>{LINES[2].text}</p>
+      )}
+    </div>
+  );
+}
 
-          <div className="p-6">
-            {/* Prompt */}
-            <div
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              className="text-sm mb-5"
-            >
-              <span style={{ color: "#D97757" }}>✦</span>
-              <span style={{ color: "#788C5D" }} className="ml-1.5">cbc@trinity</span>
-              <span style={{ color: "#B0AEA5" }} className="mx-1">~</span>
-              <span style={{ color: "#B0AEA5" }}>%</span>
-              <span style={{ color: "#FAF9F5" }} className="ml-2">
-                navigate to {pathname}
-              </span>
-            </div>
+// ── Page ──────────────────────────────────────────────────────────────────────
+export default function NotFound() {
+  return (
+    <div className="pt-14 min-h-screen flex items-center justify-center relative overflow-hidden">
 
-            {/* Trace */}
-            <div
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              className="text-xs leading-7 mb-5"
-            >
-              {TRACE.slice(0, shown).map((line, i) =>
-                line.text ? (
-                  <div key={i} style={{ color: line.color }}>{line.text}</div>
-                ) : (
-                  <div key={i} style={{ minHeight: "1.75rem" }} />
-                )
-              )}
-            </div>
+      {/* Static scanlines */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.013) 3px, rgba(255,255,255,0.013) 4px)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-            {/* Resolution */}
-            {resolved && (
-              <div className="animate-fade-up">
-                <div
-                  style={{ fontFamily: "'JetBrains Mono', monospace", color: "#788C5D" }}
-                  className="text-xs mb-3"
-                >
-                  ✓ did you mean one of these?
-                </div>
-                <div className="space-y-1.5 mb-6">
-                  {SUGGESTIONS.map((s) => (
-                    <Link
-                      key={s.path}
-                      href={s.path}
-                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                      className="flex items-center gap-2 text-sm text-sky hover:text-foreground transition-colors"
-                    >
-                      <span className="text-stone/30">→</span>
-                      {s.path}
-                      <span className="text-stone/30">— {s.label}</span>
-                    </Link>
-                  ))}
-                </div>
-                <div className="flex items-center">
-                  <span style={{ color: "#D97757" }}>✦</span>
-                  <span style={{ color: "#788C5D", fontFamily: "'JetBrains Mono', monospace" }} className="ml-1.5">cbc@trinity</span>
-                  <span style={{ color: "#B0AEA5", fontFamily: "'JetBrains Mono', monospace" }} className="mx-1">~</span>
-                  <span style={{ color: "#B0AEA5", fontFamily: "'JetBrains Mono', monospace" }}>%</span>
-                  <span
-                    style={{ color: "#FAF9F5", fontFamily: "'JetBrains Mono', monospace", display: "inline-block", width: "0.55em" }}
-                    className="ml-2 animate-blink"
-                  >
-                    ▊
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+      {/* Moving scan highlight */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          background:
+            "linear-gradient(to bottom, transparent, rgba(255,255,255,0.016), transparent)",
+          animation: "scanmove 7s linear infinite",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
+
+      {/* Ghost 404 watermark */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          fontFamily: MONO,
+          fontSize: "clamp(10rem, 36vw, 26rem)",
+          fontWeight: 700,
+          lineHeight: 1,
+          color: "#D97757",
+          opacity: 0.05,
+          userSelect: "none",
+          pointerEvents: "none",
+          letterSpacing: "-0.04em",
+        }}
+      >
+        404
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
+        <ClaudeBot />
+
+        {/* Glitchy 404 */}
+        <div
+          style={{
+            fontFamily: MONO,
+            fontSize: "clamp(5rem, 18vw, 11rem)",
+            fontWeight: 700,
+            lineHeight: 1,
+            color: "#FAF9F5",
+            animation: "glitch404 6s infinite",
+            letterSpacing: "-0.02em",
+            userSelect: "none",
+          }}
+        >
+          404
         </div>
 
         <p
-          style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          className="text-xs text-stone/25 text-center mt-4"
+          style={{ fontFamily: MONO }}
+          className="text-xs text-stone/40 tracking-widest uppercase -mt-2"
         >
-          404 · page not found
+          page not found
         </p>
+
+        <TerminalError />
+
+        <Link
+          href="/"
+          style={{ fontFamily: MONO }}
+          className="text-sm text-stone/40 hover:text-terracotta transition-colors mt-1"
+        >
+          ← go home
+        </Link>
       </div>
     </div>
   );

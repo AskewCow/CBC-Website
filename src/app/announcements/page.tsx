@@ -1,12 +1,13 @@
-import { mockAnnouncements } from "@/data/mock";
+import { getAnnouncements } from "@/lib/queries";
 import TerminalPrompt from "@/components/TerminalPrompt";
+import AnnouncementBody from "@/components/AnnouncementBody";
 
 const ACCENT_COLORS = ["#D97757", "#6A9BCC", "#788C5D", "#CD9D7D", "#B0AEA5"];
 
-export default function AnnouncementsPage() {
-  const sorted = [...mockAnnouncements].sort((a, b) =>
-    a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1
-  );
+export const revalidate = 300;
+
+export default async function AnnouncementsPage() {
+  const sorted = await getAnnouncements();
 
   return (
     <div className="pt-14 min-h-screen">
@@ -15,14 +16,7 @@ export default function AnnouncementsPage() {
         <TerminalPrompt folder="announcements" command="cat feed.log" />
         <h1 className="font-sans text-3xl md:text-4xl font-semibold mb-2">Announcements</h1>
         <p className="font-sans text-base text-stone">
-          Mirrors{" "}
-          <span
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-            className="text-sky"
-          >
-            #announcements
-          </span>{" "}
-          in Discord.
+          News from the club, as it happens.
         </p>
       </div>
 
@@ -48,14 +42,14 @@ export default function AnnouncementsPage() {
                 {/* Meta row */}
                 <div className="flex flex-wrap items-center gap-4 mb-4">
                   <span
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                     className="text-xs text-stone/40"
                   >
                     {ann.date}
                   </span>
                   <span
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
+                      fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                       color: accent,
                       fontSize: "0.65rem",
                       letterSpacing: "0.06em",
@@ -71,16 +65,14 @@ export default function AnnouncementsPage() {
                 </h2>
 
                 {/* Body */}
-                <p className="font-sans text-base text-stone leading-relaxed max-w-2xl">
-                  {ann.body}
-                </p>
+                <AnnouncementBody>{ann.body}</AnnouncementBody>
               </div>
             </article>
           );
         })}
 
         <p
-          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
           className="text-xs text-stone/25 pt-10"
         >
           announcements are posted by committee members and synced here automatically

@@ -6,16 +6,28 @@
     "dev": "next dev -p 8443",
     "build": "next build",
     "start": "next start -p 8443",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:wait": "node --env-file=.env.local db/wait-for-db.mjs",
+    "db:bootstrap": "node --env-file=.env.local db/bootstrap.mjs",
+    "db:migrate": "node --env-file=.env.local db/migrate.mjs",
+    "db:setup": "npm run db:up && npm run db:wait && npm run db:bootstrap && npm run db:migrate",
+    "db:seed": "node --env-file=.env.local db/seed.dev.mjs",
+    "db:reset": "docker compose down -v && npm run db:setup"
   },
   "dependencies": {
     "next": "^15.5.4",
+    "pg": "^8.13.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "oxfmt": "^0.2.0",

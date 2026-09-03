@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import TerminalPrompt from "@/components/TerminalPrompt";
+import { DISCORD_INVITE, DISCORD_INVITE_LABEL } from "@/lib/constants";
 
 type Block =
   | { type: "cmd"; text: string; comment?: string }
@@ -18,8 +19,8 @@ const STEPS: {
     n: "01",
     title: "Join the Discord",
     body: "Everything runs through Discord first: events, project submissions, announcements, and support. It's the only thing you need to do right now.",
-    blocks: [{ type: "cmd", text: "open https://discord.com/invite/rFe8tJ88ww" }],
-    link: { label: "discord.gg/rFe8tJ88ww ↗", href: "https://discord.com/invite/rFe8tJ88ww", external: true },
+    blocks: [{ type: "cmd", text: `open ${DISCORD_INVITE}` }],
+    link: { label: `${DISCORD_INVITE_LABEL} ↗`, href: DISCORD_INVITE, external: true },
   },
   {
     n: "02",
@@ -46,7 +47,7 @@ const STEPS: {
   {
     n: "04",
     title: "Come to events",
-    body: "Workshops, hackathons, and research salons every term. Every event post in #events has a Register button — tap it to sign up or withdraw. API credits are available to members actively working on a project.",
+    body: "Workshops, hackathons, and research salons every term. Every event post in #events has a Register button — tap it to sign up or withdraw. Every member gets Claude Pro and API credits — see Discord for details.",
     blocks: [
       { type: "action", text: "#events · tap \"Register\" on any event post" },
     ],
@@ -86,7 +87,7 @@ export default function JoinPage() {
 
         <div className="flex flex-col items-start md:items-end">
           <a
-            href="https://discord.com/invite/rFe8tJ88ww"
+            href={DISCORD_INVITE}
             target="_blank"
             rel="noopener noreferrer"
             className="font-sans text-sm font-medium px-8 py-4 transition-opacity w-fit"
@@ -114,7 +115,7 @@ export default function JoinPage() {
       <div className="max-w-7xl mx-auto px-6 py-14 border-t border-border grid md:grid-cols-2 gap-10 items-start mb-8">
         <div>
           <p
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
             className="text-xs text-stone/40 uppercase tracking-widest mb-5"
           >
             formal membership form
@@ -124,7 +125,7 @@ export default function JoinPage() {
             and getting the member role is everything you need.
           </p>
           <p
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
             className="text-xs text-stone/25 mt-3"
           >
             expected: Hilary term 2026
@@ -162,7 +163,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
       <div>
         <span
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--font-jbmono), ui-monospace, monospace",
             color: "#D97757",
             fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
             lineHeight: 1,
@@ -191,7 +192,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
               <div key={i}>
                 {block.comment && (
                   <p
-                    style={{ fontFamily: "'JetBrains Mono', monospace", color: "#788C5D" }}
+                    style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace", color: "#788C5D" }}
                     className="text-xs mb-1.5 pl-1"
                   >
                     # {block.comment}
@@ -199,7 +200,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
                 )}
                 <div
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                     backgroundColor: "#1C1C1A",
                     borderLeft: "3px solid rgba(217,119,87,0.4)",
                   }}
@@ -213,7 +214,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
               <div
                 key={i}
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                   backgroundColor: "#1C1C1A",
                   borderLeft: "3px solid rgba(106,155,204,0.4)",
                 }}
@@ -234,7 +235,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
                 href={step.link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                 className="text-sm text-sky hover:text-foreground transition-colors"
               >
                 {step.link.label}
@@ -242,7 +243,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
             ) : (
               <Link
                 href={step.link.href}
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                 className="text-sm text-sky hover:text-foreground transition-colors"
               >
                 {step.link.label}

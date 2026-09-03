@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import TerminalPrompt from "@/components/TerminalPrompt";
+import { DISCORD_INVITE } from "@/lib/constants";
 
 type Lang = "sh" | "py" | "ts";
 
@@ -17,12 +18,12 @@ const STEPS: Step[] = [
     n: 1,
     title: "Get an API key",
     description:
-      "Create a free account at console.anthropic.com. Navigate to API Keys and generate a new key — you only see it once. Under Billing, add a small amount of credit; API calls are not free.",
+      "Sign up at console.anthropic.com, then head to API Keys and generate a new one. CBC members get API credits to build with, and the details are in Discord.",
     blocks: [
       {
         lang: "sh",
         code: "open https://console.anthropic.com/settings/keys",
-        comment: "# API Keys → New Key · add credit under Billing",
+        comment: "# API Keys → New Key",
       },
     ],
   },
@@ -142,7 +143,11 @@ function tokeniseLine(line: string, lang: Lang, isFirstLine: boolean): { text: s
 
     if (tok.startsWith('"') || tok.startsWith("'")) {
       color = H.str;
-    } else if (tok.startsWith("//") || tok.startsWith("#")) {
+    } else if (
+      // `//` is a comment only in TS — in shell it's just part of a URL.
+      (lang === "ts" && tok.startsWith("//")) ||
+      (lang !== "ts" && tok.startsWith("#"))
+    ) {
       color = H.cmt;
     } else if (/^\d+$/.test(tok)) {
       color = H.num;
@@ -196,7 +201,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={copy}
-      style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
       className={`text-xs px-3 py-1.5 transition-colors border ${
         copied
           ? "text-sage border-sage/30"
@@ -231,7 +236,7 @@ export default function ResourcesPage() {
             <button
               key={s.n}
               onClick={() => setActive(s.n)}
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
               className={`flex items-center gap-2 px-5 py-4 text-xs whitespace-nowrap border-b-2 transition-all -mb-px ${
                 s.n === active
                   ? "border-terracotta text-foreground"
@@ -260,7 +265,7 @@ export default function ResourcesPage() {
           <div>
             <div
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                 color: "#D97757",
                 fontSize: "clamp(2.5rem, 8vw, 5rem)",
                 lineHeight: 1,
@@ -278,14 +283,14 @@ export default function ResourcesPage() {
 
             <div
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                 borderLeft: "2px solid rgba(106,155,204,0.3)",
               }}
               className="pl-4 mt-8 text-xs text-stone/40 leading-relaxed"
             >
               stuck? ask in{" "}
               <a
-                href="https://discord.com/invite/rFe8tJ88ww"
+                href={DISCORD_INVITE}
                 className="text-sky hover:text-foreground transition-colors"
               >
                 #help
@@ -301,7 +306,7 @@ export default function ResourcesPage() {
                 {block.comment && (
                   <div
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
+                      fontFamily: "var(--font-jbmono), ui-monospace, monospace",
                       color: "#788C5D",
                     }}
                     className="text-xs px-5 pt-4 pb-2"
@@ -311,7 +316,7 @@ export default function ResourcesPage() {
                 )}
                 <div className="flex items-start justify-between gap-4">
                   <pre
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                     className="text-sm px-5 py-4 flex-1 whitespace-pre leading-relaxed no-scrollbar overflow-x-auto"
                   >
                     <SyntaxCode code={block.code} lang={block.lang} />
@@ -328,7 +333,7 @@ export default function ResourcesPage() {
               {active > 1 ? (
                 <button
                   onClick={() => setActive((a) => a - 1)}
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                   className="text-sm text-stone hover:text-foreground transition-colors px-5 py-2.5 border border-border hover:border-stone/40"
                 >
                   ← prev
@@ -358,17 +363,17 @@ export default function ResourcesPage() {
               {active < STEPS.length ? (
                 <button
                   onClick={() => setActive((a) => Math.min(STEPS.length, a + 1))}
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                   className="text-sm text-foreground hover:text-terracotta transition-colors px-5 py-2.5 border border-border hover:border-terracotta/40"
                 >
                   next →
                 </button>
               ) : (
                 <a
-                  href="https://discord.com/invite/rFe8tJ88ww"
+                  href={DISCORD_INVITE}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                   className="text-sm text-sky hover:text-foreground transition-colors px-5 py-2.5 border border-border"
                 >
                   join discord →

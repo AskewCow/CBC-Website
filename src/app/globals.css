@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
+/* Fonts are loaded with next/font in src/app/layout.tsx — they set the
+   --font-inter / --font-jbmono CSS variables on <html>, and are self-hosted at
+   build time (no request to Google from the visitor's browser). */
 @theme {
-  --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jbmono), ui-monospace, monospace;
 
   --color-background: #141413;
   --color-foreground: #FAF9F5;
@@ -20,6 +21,7 @@
 
   --animate-fade-up: fade-up 0.3s ease-out both;
   --animate-blink: blink 1.05s step-end infinite;
+  --animate-status-pulse: status-pulse 2.6s ease-in-out infinite;
 }
 
 @keyframes fade-up {
@@ -38,12 +40,59 @@
   50% { opacity: 0; }
 }
 
+/* Calm "live" indicator — slow eased fade that never fully disappears. */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.28; }
+}
+
+
+/* ── 404 page ─────────────────────────────────────────────────────────────── */
+@keyframes bot-float {
+  0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+  40%      { transform: translateY(-12px) rotate(0.5deg); }
+  70%      { transform: translateY(-6px) rotate(-0.3deg); }
+}
+
+@keyframes glitch404 {
+  0%, 87%, 100% {
+    text-shadow: none;
+    transform: translate(0, 0) skewX(0deg);
+    opacity: 1;
+  }
+  88% {
+    text-shadow: -5px 0 #6A9BCC, 5px 0 #D97757;
+    transform: translate(-3px, 0) skewX(-1deg);
+    opacity: 0.9;
+  }
+  89.5% {
+    text-shadow: 5px 0 #6A9BCC, -5px 0 #D97757;
+    transform: translate(4px, 1px) skewX(1deg);
+    opacity: 0.95;
+  }
+  91% {
+    text-shadow: -3px 0 #D97757, 3px 0 #6A9BCC;
+    transform: translate(-1px, 0) skewX(0deg);
+    opacity: 1;
+  }
+  92% {
+    text-shadow: none;
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes scanmove {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
 html,
 body {
   height: 100%;
   background-color: #141413;
   color: #FAF9F5;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 * {

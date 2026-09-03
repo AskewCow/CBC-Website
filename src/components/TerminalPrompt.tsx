@@ -33,6 +33,17 @@ function TypedCommand({ text, chars }: { text: string; chars: number }) {
 type Phase = "idle" | "cd" | "spin" | "cmd" | "done";
 const SPIN_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧"];
 
+function Cursor() {
+  return (
+    <span
+      style={{ color: "#FAF9F5", display: "inline-block", width: "0.5em" }}
+      className="animate-blink"
+    >
+      ▊
+    </span>
+  );
+}
+
 export default function TerminalPrompt({ folder, command }: Props) {
   const cdCmd = `cd /${folder}`;
   const [phase, setPhase] = useState<Phase>("idle");
@@ -76,18 +87,9 @@ export default function TerminalPrompt({ folder, command }: Props) {
     return () => clearTimeout(t);
   }, [phase, cmdChars, command]);
 
-  const Cursor = () => (
-    <span
-      style={{ color: "#FAF9F5", display: "inline-block", width: "0.5em" }}
-      className="animate-blink"
-    >
-      ▊
-    </span>
-  );
-
   return (
     <div
-      style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
       className="text-xs mb-8 space-y-1.5 overflow-x-hidden"
     >
       {phase !== "idle" && (

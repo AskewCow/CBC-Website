@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { DISCORD_INVITE } from "@/lib/constants";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -20,7 +21,10 @@ export default function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="w-full px-6 h-14 grid grid-cols-[1fr_auto_1fr] md:grid-cols-3 items-center">
         {/* Left: logo */}
-        <Link href="/" className="flex items-center gap-2 font-mono text-sm">
+        <Link
+          href="/"
+          className="justify-self-start flex items-center gap-2 font-mono text-sm"
+        >
           <span style={{ color: "#D97757", fontSize: "1.1rem" }}>✦</span>
           <span className="font-medium text-foreground">claude builder club</span>
         </Link>
@@ -48,7 +52,7 @@ export default function Nav() {
         {/* Right: discord + mobile menu */}
         <div className="flex items-center justify-end">
           <a
-            href="https://discord.gg/rFe8tJ88ww"
+            href={DISCORD_INVITE}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden md:flex items-center gap-1 font-mono text-xs px-3 py-1.5 border border-border text-stone hover:text-foreground hover:border-stone/40 transition-colors"
@@ -85,7 +89,7 @@ export default function Nav() {
             );
           })}
           <a
-            href="https://discord.gg/rFe8tJ88ww"
+            href={DISCORD_INVITE}
             target="_blank"
             rel="noopener noreferrer"
             className="font-mono text-sm text-sky mt-1"
