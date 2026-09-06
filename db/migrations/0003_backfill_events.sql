@@ -50,7 +50,7 @@ with incoming (name, type, description, location, starts_at, duration_minutes, a
       'hackathon',
       'A social impact hackathon where members come together to build creative AI-powered solutions to real-world challenges across health, education, governance, and creativity.',
       'The Portal, Trinity Business School',
-      1772445600,           -- 2026-03-02 10:00 Europe/Dublin
+      1774605600,           -- 2026-03-27 10:00 Europe/Dublin
       480,
       92
     ),
