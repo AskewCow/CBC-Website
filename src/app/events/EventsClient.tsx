@@ -118,9 +118,10 @@ export default function EventsClient({ events }: { events: Event[] }) {
               ))}
             </div>
 
-            {!showAllPast && past.length > PAST_LIMIT && (
+            {past.length > PAST_LIMIT && (
               <ShowMore
-                onClick={() => setShowAllPast(true)}
+                expanded={showAllPast}
+                onClick={() => setShowAllPast((v) => !v)}
                 className="mt-10"
               />
             )}

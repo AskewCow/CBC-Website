@@ -97,8 +97,12 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
               ))}
             </div>
 
-            {!showAll && visible.length > PROJECT_LIMIT && (
-              <ShowMore onClick={() => setShowAll(true)} className="mt-10" />
+            {visible.length > PROJECT_LIMIT && (
+              <ShowMore
+                expanded={showAll}
+                onClick={() => setShowAll((v) => !v)}
+                className="mt-10"
+              />
             )}
           </>
         )}

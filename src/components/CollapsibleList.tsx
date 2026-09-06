@@ -23,8 +23,12 @@ export default function CollapsibleList({
   return (
     <>
       {visible}
-      {!showAll && items.length > limit && (
-        <ShowMore onClick={() => setShowAll(true)} className={buttonClassName} />
+      {items.length > limit && (
+        <ShowMore
+          expanded={showAll}
+          onClick={() => setShowAll((v) => !v)}
+          className={buttonClassName}
+        />
       )}
     </>
   );
