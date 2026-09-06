@@ -133,38 +133,38 @@ export default function EventsClient({ events }: { events: Event[] }) {
 }
 
 // Shown when nothing is on the calendar yet — keeps the "upcoming — 0" heading
-// for rhythm with the populated state. Below md the heading + note stack above
-// the floating Claude mascot (shared with the 404 page); from md up the mascot
-// sits to the right, vertically centred against the heading + note together.
+// for rhythm with the populated state. On mobile the floating Claude mascot
+// (shared with the 404 page) sits centred between the heading and the note;
+// from md up it moves to the right column, vertically centred against the
+// heading + note together.
 function EmptyUpcoming() {
   return (
     <div className="pt-8 md:pt-12 pb-10 md:pb-12 border-b border-border">
-      <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-10 lg:gap-12">
-        {/* Heading + note kept in one column so the mascot centres against both */}
-        <div className="max-w-lg">
-          <p
-            style={{ fontFamily: MONO }}
-            className="text-base text-stone/70 mb-5 tracking-wide"
-          >
-            upcoming —{" "}
-            <span
-              style={{ color: "#D97757", fontSize: "1.15rem", fontWeight: 700 }}
-            >
-              0
-            </span>
-          </p>
-          <p
-            style={{ borderLeft: "2px solid rgba(217,119,87,0.35)" }}
-            className="font-sans text-base text-stone leading-relaxed pl-5"
-          >
-            No events are currently scheduled. Our upcoming workshops, salons, and
-            hackathons are still being planned. Check back here for updates as new
-            events are announced.
-          </p>
-        </div>
-        <div className="shrink-0 md:pr-2 lg:pr-10">
+      <div className="grid grid-cols-1 gap-y-6 md:grid-cols-[minmax(0,32rem)_1fr] md:items-center md:gap-x-10 md:gap-y-5 lg:gap-x-12">
+        <p
+          style={{ fontFamily: MONO }}
+          className="text-base text-stone/70 tracking-wide md:col-start-1 md:row-start-1"
+        >
+          upcoming —{" "}
+          <span style={{ color: "#D97757", fontSize: "1.15rem", fontWeight: 700 }}>
+            0
+          </span>
+        </p>
+
+        {/* Mobile: centred, sitting between the heading and the note.
+            md+: right column, vertically centred against heading + note. */}
+        <div className="justify-self-center md:col-start-2 md:row-start-1 md:row-span-2 md:self-center md:justify-self-end md:pr-2 lg:pr-10">
           <ClaudeBot />
         </div>
+
+        <p
+          style={{ borderLeft: "2px solid rgba(217,119,87,0.35)" }}
+          className="font-sans text-base text-stone leading-relaxed pl-5 md:col-start-1 md:row-start-2"
+        >
+          No events are currently scheduled. Our upcoming workshops, salons, and
+          hackathons are still being planned. Check back here for updates as new
+          events are announced.
+        </p>
       </div>
     </div>
   );
