@@ -81,7 +81,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
       </div>
 
       {/* ── Card grid ── */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 pt-12 pb-6">
         {visible.length === 0 ? (
           <p
             style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
@@ -109,7 +109,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
 
         <p
           style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
-          className="group text-xs text-stone/25 hover:text-stone/60 transition-colors mt-14 pt-8 pb-10 border-t border-border"
+          className="group text-xs text-stone/25 hover:text-stone/60 transition-colors mt-12 pb-2"
         >
           projects are submitted via{" "}
           <span className="transition-colors group-hover:text-[#CD9D7D]">/submit-project</span>

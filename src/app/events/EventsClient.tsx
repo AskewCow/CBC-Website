@@ -104,7 +104,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
 
         {/* ── Past ── */}
         {past.length > 0 && (
-          <div className="py-12 pb-16">
+          <div className="pt-12 pb-8">
             <p
               style={{ fontFamily: MONO }}
               className="text-xs text-stone/40 uppercase tracking-widest mb-8"

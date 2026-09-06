@@ -25,7 +25,7 @@ export default async function AnnouncementsPage() {
       </div>
 
       {/* ── Feed ── */}
-      <div className="max-w-7xl mx-auto px-6 pb-20">
+      <div className="max-w-7xl mx-auto px-6 pb-10">
         <CollapsibleList limit={FEED_LIMIT}>
           {sorted.map((ann, i) => {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
