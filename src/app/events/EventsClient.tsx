@@ -1,6 +1,7 @@
 import type { Event } from "@/lib/queries";
 import { DISCORD_INVITE, DISCORD_INVITE_LABEL } from "@/lib/constants";
 import TerminalPrompt from "@/components/TerminalPrompt";
+import ClaudeBot from "@/components/ClaudeBot";
 
 const MONO = "var(--font-jbmono), ui-monospace, monospace";
 
@@ -63,7 +64,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
 
       <div className="max-w-7xl mx-auto px-6">
         {/* ── Upcoming ── */}
-        {upcoming.length > 0 && (
+        {upcoming.length > 0 ? (
           <div className="py-8 md:py-12 border-b border-border">
             <p
               style={{ fontFamily: MONO }}
@@ -87,6 +88,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
               ))}
             </div>
           </div>
+        ) : (
+          <EmptyUpcoming />
         )}
 
         {/* ── Past ── */}
@@ -106,6 +109,44 @@ export default function EventsClient({ events }: { events: Event[] }) {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Shown when nothing is on the calendar yet — keeps the "upcoming — 0" heading
+// for rhythm with the populated state. Below md the heading + note stack above
+// the floating Claude mascot (shared with the 404 page); from md up the mascot
+// sits to the right, vertically centred against the heading + note together.
+function EmptyUpcoming() {
+  return (
+    <div className="pt-8 md:pt-12 pb-10 md:pb-12 border-b border-border">
+      <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-10 lg:gap-12">
+        {/* Heading + note kept in one column so the mascot centres against both */}
+        <div className="max-w-lg">
+          <p
+            style={{ fontFamily: MONO }}
+            className="text-base text-stone/70 mb-5 tracking-wide"
+          >
+            upcoming —{" "}
+            <span
+              style={{ color: "#D97757", fontSize: "1.15rem", fontWeight: 700 }}
+            >
+              0
+            </span>
+          </p>
+          <p
+            style={{ borderLeft: "2px solid rgba(217,119,87,0.35)" }}
+            className="font-sans text-base text-stone leading-relaxed pl-5"
+          >
+            No events are currently scheduled. Our upcoming workshops, salons, and
+            hackathons are still being planned. Check back here for updates as new
+            events are announced.
+          </p>
+        </div>
+        <div className="shrink-0 md:pr-2 lg:pr-10">
+          <ClaudeBot />
+        </div>
       </div>
     </div>
   );

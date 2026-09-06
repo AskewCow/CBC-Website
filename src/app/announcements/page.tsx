@@ -12,7 +12,7 @@ export default async function AnnouncementsPage() {
   return (
     <div className="pt-14 min-h-screen">
       {/* ── Page header ── */}
-      <div className="max-w-5xl mx-auto px-6 pt-8 md:pt-14 pb-10 border-b border-border">
+      <div className="max-w-7xl mx-auto px-6 pt-8 md:pt-14 pb-10 border-b border-border">
         <TerminalPrompt folder="announcements" command="cat feed.log" />
         <h1 className="font-sans text-3xl md:text-4xl font-semibold mb-2">Announcements</h1>
         <p className="font-sans text-base text-stone">
@@ -21,7 +21,7 @@ export default async function AnnouncementsPage() {
       </div>
 
       {/* ── Feed ── */}
-      <div className="max-w-5xl mx-auto px-6 pb-20">
+      <div className="max-w-7xl mx-auto px-6 pb-20">
         {sorted.map((ann, i) => {
           const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
           return (

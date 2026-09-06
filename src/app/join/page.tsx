@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import TerminalPrompt from "@/components/TerminalPrompt";
-import { DISCORD_INVITE, DISCORD_INVITE_LABEL } from "@/lib/constants";
+import { DISCORD_INVITE } from "@/lib/constants";
 
 type Block =
-  | { type: "cmd"; text: string; comment?: string }
+  | { type: "cmd"; text: string; comment?: string; href?: string }
   | { type: "action"; text: string };
 
 const STEPS: {
@@ -19,13 +19,13 @@ const STEPS: {
     n: "01",
     title: "Join the Discord",
     body: "Everything runs through Discord first: events, project submissions, announcements, and support. It's the only thing you need to do right now.",
-    blocks: [{ type: "cmd", text: `open ${DISCORD_INVITE}` }],
-    link: { label: `${DISCORD_INVITE_LABEL} ↗`, href: DISCORD_INVITE, external: true },
+    blocks: [{ type: "cmd", text: `open ${DISCORD_INVITE}`, href: DISCORD_INVITE }],
+    link: null,
   },
   {
     n: "02",
     title: "Complete onboarding",
-    body: "As soon as you join, the CBC bot DMs you with a few quick questions about you and what you want to build. Answer in the DM and it assigns you the Member role automatically.",
+    body: "As soon as you join, the CBC bot will DM you with a few quick questions. Answer the questions to get verified and gain access to the server.",
     blocks: [
       { type: "action", text: "cbc-bot opened a DM: \"a few quick questions before you get started\"" },
     ],
@@ -34,7 +34,7 @@ const STEPS: {
   {
     n: "03",
     title: "Start building",
-    body: "Check #resources for API setup and #projects for inspiration. Stuck? Open a ticket from the help panel or ask in #api-help. When your build is ready, run /submit-project — it opens a form for the name, description, and GitHub link.",
+    body: "Check the Resources and Projects pages for API setup and inspiration. Need help? Head over to Discord, open a ticket in #help and select from the help panel. Ready to showcase your project? Run /submit-project in Discord to submit it.",
     blocks: [
       {
         type: "cmd",
@@ -47,26 +47,39 @@ const STEPS: {
   {
     n: "04",
     title: "Come to events",
-    body: "Workshops, hackathons, and research salons every term. Every event post in #events has a Register button — tap it to sign up or withdraw. Every member gets Claude Pro and API credits — see Discord for details.",
+    body: "Workshops, hackathons, and research salons every term. Register for events directly in the Discord server through #events. Stay up to date with upcoming events and opportunities to get involved.",
     blocks: [
-      { type: "action", text: "#events · tap \"Register\" on any event post" },
+      { type: "action", text: "attend at least one event to qualify for Claude Pro and API credits." },
     ],
     link: { label: "view upcoming events →", href: "/events", external: false },
   },
 ];
 
-// Splits a command into keyword + rest and renders the keyword in accent color
-function CmdText({ text }: { text: string }) {
+// Splits a command into keyword + rest and renders the keyword in accent color.
+// When `href` is set, only the argument (e.g. the URL) is a link — underlined,
+// same colour as the surrounding text.
+function CmdText({ text, href }: { text: string; href?: string }) {
   const spaceIdx = text.indexOf(" ");
   if (spaceIdx === -1) {
     return <span style={{ color: "#CD9D7D" }}>{text}</span>;
   }
   const keyword = text.slice(0, spaceIdx);
-  const rest = text.slice(spaceIdx);
+  const rest = text.slice(spaceIdx + 1);
   return (
     <>
-      <span style={{ color: "#CD9D7D" }}>{keyword}</span>
-      <span style={{ color: "#FAF9F5" }}>{rest}</span>
+      <span style={{ color: "#CD9D7D" }}>{keyword}</span>{" "}
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#FAF9F5", textDecoration: "underline" }}
+        >
+          {rest}
+        </a>
+      ) : (
+        <span style={{ color: "#FAF9F5" }}>{rest}</span>
+      )}
     </>
   );
 }
@@ -207,7 +220,7 @@ function StepPanel({ step }: { step: (typeof STEPS)[number] }) {
                   className="flex items-baseline gap-2 px-5 py-3.5 text-sm w-full overflow-x-auto"
                 >
                   <span style={{ color: "#788C5D" }}>$</span>
-                  <CmdText text={block.text} />
+                  <CmdText text={block.text} href={block.href} />
                 </div>
               </div>
             ) : (

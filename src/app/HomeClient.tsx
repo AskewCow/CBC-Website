@@ -51,9 +51,9 @@ const fmtTok = (n: number) => (n < 1000 ? String(n) : (n / 1000).toFixed(1) + "k
 type RLine = { t: string; c?: string; href?: string };
 
 const RESP_1: RLine[] = [
-  { t: "The Claude Builder Club is a Trinity College Dublin student" },
-  { t: "society. We help TCD students learn Claude properly and put" },
-  { t: "it to real use, together." },
+  { t: "The Claude Builder Club is a student-led society at" },
+  { t: "Trinity College Dublin. We help students learn how to" },
+  { t: "use Claude and put it to real use, together." },
   { t: "" },
   { t: "→ Learn Claude, Claude Code, and the API", c: C.sky },
   { t: "→ Workshops, hackathons and research salons", c: C.sky },
@@ -66,7 +66,7 @@ const RESP_1: RLine[] = [
 const RESP_2: RLine[] = [
   { t: "Three steps:" },
   { t: "" },
-  { t: "1. Join the Discord — link below." },
+  { t: "1. Join the Discord." },
   { t: "2. Show up to an event." },
   { t: "3. Get your free Claude Pro and API credits." },
   { t: "" },
@@ -238,7 +238,7 @@ function BlockView({ block }: { block: Block }) {
   );
 }
 
-function TerminalHero({ onComplete }: { onComplete: () => void }) {
+function TerminalHero({ onComplete }: { onComplete?: () => void }) {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [typed, setTyped] = useState("");
   const [inputActive, setInputActive] = useState(false);
@@ -288,7 +288,7 @@ function TerminalHero({ onComplete }: { onComplete: () => void }) {
         { id: 6, kind: "assistant", lines: RESP_2, shown: RESP_2.length },
       ]);
       setIdle(true);
-      onComplete();
+      onComplete?.();
     };
 
     const onVis = () => {
@@ -391,7 +391,7 @@ function TerminalHero({ onComplete }: { onComplete: () => void }) {
       if (stop()) return;
       doneRef.current = true;
       setIdle(true);
-      onComplete();
+      onComplete?.();
     })();
 
     return () => {
@@ -478,15 +478,10 @@ function TerminalHero({ onComplete }: { onComplete: () => void }) {
 }
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
-function Stats({ animate, stats }: { animate: boolean; stats: ClubStats }) {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    if (!animate) return;
-    const t = setTimeout(() => setShow(true), 300);
-    return () => clearTimeout(t);
-  }, [animate]);
-
+// The numbers come from the server (getClubStats — ISR-cached 5 min) and are
+// already in the initial HTML, so render them straight away. Only the entrance
+// is animated; there is no client-side fetch and no loading state.
+function Stats({ stats }: { stats: ClubStats }) {
   const rows = [
     { n: String(stats.members), label: "members" },
     { n: String(stats.projectsShipped), label: "projects shipped" },
@@ -504,37 +499,28 @@ function Stats({ animate, stats }: { animate: boolean; stats: ClubStats }) {
           <span style={{ color: "#FAF9F5" }} className="ml-2">cbc stats --live</span>
         </div>
 
-        {!show ? (
-          <p
-            style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
-            className="text-xs text-stone/30 animate-pulse"
-          >
-            fetching...
-          </p>
-        ) : (
-          <div className="grid grid-cols-3 divide-x divide-border">
-            {rows.map((s, i) => (
+        <div className="grid grid-cols-3 divide-x divide-border">
+          {rows.map((s, i) => (
+            <div
+              key={i}
+              className={`${i > 0 ? "pl-8 md:pl-14" : ""} ${i < 2 ? "pr-8 md:pr-14" : ""} animate-fade-up`}
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
               <div
-                key={i}
-                className={`${i > 0 ? "pl-8 md:pl-14" : ""} ${i < 2 ? "pr-8 md:pr-14" : ""} animate-fade-up`}
-                style={{ animationDelay: `${i * 90}ms` }}
+                style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace", color: "#D97757" }}
+                className="text-5xl sm:text-6xl md:text-7xl font-bold leading-none mb-2"
               >
-                <div
-                  style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace", color: "#D97757" }}
-                  className="text-5xl sm:text-6xl md:text-7xl font-bold leading-none mb-2"
-                >
-                  {s.n}
-                </div>
-                <div
-                  style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
-                  className="text-xs text-stone"
-                >
-                  {s.label}
-                </div>
+                {s.n}
               </div>
-            ))}
-          </div>
-        )}
+              <div
+                style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
+                className="text-xs text-stone"
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -683,8 +669,6 @@ export default function HomeClient({
   stats: ClubStats;
   roster: Roster;
 }) {
-  const [terminalDone, setTerminalDone] = useState(false);
-
   return (
     <div>
       {/* ── Hero — unchanged ── */}
@@ -707,7 +691,7 @@ export default function HomeClient({
 
             <div className="bg-surface border border-border rounded-xl overflow-hidden">
               <div className="px-5 py-6 sm:px-8 sm:py-8 min-h-[600px]">
-                <TerminalHero onComplete={() => setTerminalDone(true)} />
+                <TerminalHero />
               </div>
             </div>
           </div>
@@ -763,7 +747,7 @@ export default function HomeClient({
       </section>
 
       <JoinCTA />
-      <Stats animate={terminalDone} stats={stats} />
+      <Stats stats={stats} />
       <SponsorsSection />
     </div>
   );

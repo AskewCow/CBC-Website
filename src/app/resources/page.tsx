@@ -101,12 +101,12 @@ if (first.type === "text") console.log(first.text);`,
     n: 5,
     title: "Ship it",
     description:
-      "Run /submit-project in Discord — it opens a form for the project name, description, and GitHub link. Optionally set built_with: and attach a thumbnail:. It posts to the projects channel with its own discussion thread; the committee reviews it there.",
+      "When your project is ready, run /submit-project in Discord. Complete the form with your project name, description, and GitHub link, and optionally attach a thumbnail. Your project will be posted to the projects channel with its own discussion thread, where the committee will review it for a chance to be published.",
     blocks: [
       {
         lang: "sh",
         code: "/submit-project",
-        comment: "# in Discord · built_with: and thumbnail: are optional",
+        comment: "# Run in Discord",
       },
     ],
   },
