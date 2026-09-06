@@ -1,8 +1,12 @@
 import { getAnnouncements } from "@/lib/queries";
 import TerminalPrompt from "@/components/TerminalPrompt";
 import AnnouncementBody from "@/components/AnnouncementBody";
+import CollapsibleList from "@/components/CollapsibleList";
 
 const ACCENT_COLORS = ["#D97757", "#6A9BCC", "#788C5D", "#CD9D7D", "#B0AEA5"];
+
+// The feed is collapsed to this many posts until "show more" is clicked.
+const FEED_LIMIT = 7;
 
 export const revalidate = 300;
 
@@ -22,54 +26,56 @@ export default async function AnnouncementsPage() {
 
       {/* ── Feed ── */}
       <div className="max-w-7xl mx-auto px-6 pb-20">
-        {sorted.map((ann, i) => {
-          const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
-          return (
-            <article key={ann.id} className="relative py-10 md:py-14 border-b border-border">
-              {/* Colored left accent bar */}
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: "2rem",
-                  bottom: "2rem",
-                  width: "3px",
-                  backgroundColor: accent,
-                }}
-              />
+        <CollapsibleList limit={FEED_LIMIT}>
+          {sorted.map((ann, i) => {
+            const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
+            return (
+              <article key={ann.id} className="relative py-10 md:py-14 border-b border-border">
+                {/* Colored left accent bar */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: "2rem",
+                    bottom: "2rem",
+                    width: "3px",
+                    backgroundColor: accent,
+                  }}
+                />
 
-              <div className="pl-6">
-                {/* Meta row */}
-                <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <span
-                    style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
-                    className="text-xs text-stone/40"
-                  >
-                    {ann.date}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-jbmono), ui-monospace, monospace",
-                      color: accent,
-                      fontSize: "0.65rem",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    posted by {ann.postedBy}
-                  </span>
+                <div className="pl-6">
+                  {/* Meta row */}
+                  <div className="flex flex-wrap items-center gap-4 mb-4">
+                    <span
+                      style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
+                      className="text-xs text-stone/40"
+                    >
+                      {ann.date}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-jbmono), ui-monospace, monospace",
+                        color: accent,
+                        fontSize: "0.65rem",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      posted by {ann.postedBy}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="font-sans text-xl md:text-3xl font-semibold leading-snug mb-4 md:mb-6 max-w-2xl">
+                    {ann.title}
+                  </h2>
+
+                  {/* Body */}
+                  <AnnouncementBody>{ann.body}</AnnouncementBody>
                 </div>
-
-                {/* Title */}
-                <h2 className="font-sans text-xl md:text-3xl font-semibold leading-snug mb-4 md:mb-6 max-w-2xl">
-                  {ann.title}
-                </h2>
-
-                {/* Body */}
-                <AnnouncementBody>{ann.body}</AnnouncementBody>
-              </div>
-            </article>
-          );
-        })}
+              </article>
+            );
+          })}
+        </CollapsibleList>
 
         <p
           style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}

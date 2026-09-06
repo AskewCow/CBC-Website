@@ -1,9 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import type { Event } from "@/lib/queries";
 import { DISCORD_INVITE, DISCORD_INVITE_LABEL } from "@/lib/constants";
 import TerminalPrompt from "@/components/TerminalPrompt";
 import ClaudeBot from "@/components/ClaudeBot";
+import ShowMore from "@/components/ShowMore";
 
 const MONO = "var(--font-jbmono), ui-monospace, monospace";
+
+// Past events are collapsed to this many rows until "show more" is clicked.
+const PAST_LIMIT = 5;
 
 const TYPE_COLOR: Record<Event["type"], string> = {
   hackathon: "#D97757",
@@ -24,12 +31,15 @@ function parseDate(str: string) {
 }
 
 export default function EventsClient({ events }: { events: Event[] }) {
+  const [showAllPast, setShowAllPast] = useState(false);
+
   const upcoming = [...events.filter((e) => e.upcoming)].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
   const past = [...events.filter((e) => !e.upcoming)].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+  const visiblePast = showAllPast ? past : past.slice(0, PAST_LIMIT);
 
   return (
     <div className="pt-14 min-h-screen">
@@ -103,10 +113,17 @@ export default function EventsClient({ events }: { events: Event[] }) {
             </p>
 
             <div className="divide-y divide-border">
-              {past.map((ev) => (
+              {visiblePast.map((ev) => (
                 <PastEventRow key={ev.id} ev={ev} />
               ))}
             </div>
+
+            {!showAllPast && past.length > PAST_LIMIT && (
+              <ShowMore
+                onClick={() => setShowAllPast(true)}
+                className="mt-10"
+              />
+            )}
           </div>
         )}
       </div>

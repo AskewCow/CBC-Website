@@ -3,6 +3,10 @@
 import { useState } from "react";
 import type { Project } from "@/lib/queries";
 import TerminalPrompt from "@/components/TerminalPrompt";
+import ShowMore from "@/components/ShowMore";
+
+// Each category is collapsed to this many cards until "show more" is clicked.
+const PROJECT_LIMIT = 10;
 
 const TOOL_LABEL: Record<Project["builtWith"], string> = {
   "claude-api": "Claude API",
@@ -23,11 +27,18 @@ const FILTERS: Filter[] = ["all", "claude-api", "claude-code", "claude-web"];
 
 export default function ProjectsClient({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [showAll, setShowAll] = useState(false);
+
+  const selectFilter = (f: Filter) => {
+    setFilter(f);
+    setShowAll(false); // collapse again when switching category
+  };
 
   const visible =
     filter === "all"
       ? projects
       : projects.filter((p) => p.builtWith === filter);
+  const shown = showAll ? visible : visible.slice(0, PROJECT_LIMIT);
 
   return (
     <div className="pt-14 min-h-screen">
@@ -53,7 +64,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
               return (
                 <button
                   key={f}
-                  onClick={() => setFilter(f)}
+                  onClick={() => selectFilter(f)}
                   style={{ fontFamily: "var(--font-jbmono), ui-monospace, monospace" }}
                   className={`text-xs px-4 py-2 border-b-2 transition-all mr-2 ${
                     filter === f
@@ -79,11 +90,17 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
             no projects match that filter
           </p>
         ) : (
-          <div className="grid sm:grid-cols-2 gap-6">
-            {visible.map((p, idx) => (
-              <ProjectCard key={p.id} project={p} idx={idx} />
-            ))}
-          </div>
+          <>
+            <div className="grid sm:grid-cols-2 gap-6">
+              {shown.map((p, idx) => (
+                <ProjectCard key={p.id} project={p} idx={idx} />
+              ))}
+            </div>
+
+            {!showAll && visible.length > PROJECT_LIMIT && (
+              <ShowMore onClick={() => setShowAll(true)} className="mt-10" />
+            )}
+          </>
         )}
 
         <p
